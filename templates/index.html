@@ -1,0 +1,374 @@
+<html>
+<head>
+<title>memory monitor</title>
+</head>
+
+<body>
+<div style='height:105px;line-height:105px;overflow:hidden;border:1px'>混合式内存系统实时监控</div>
+</br>
+</br>
+<div id="container4" style="height: 400px; min-width: 900px;"></div>
+</br>
+</br>
+<div id="container1" style="height: 400px; width: 900px;float:left"></div>
+<div id="container5" style="height: 400px; width: 900px;float:right"></div>
+</br>
+</br>
+
+<div id="container2" style="height: 400px; width: 900px;float:left"></div>
+<div id="container6" style="height: 400px; width: 900px;float:right"></div>
+</br>
+</br>
+
+<div id="container3" style="height: 400px; min-width: 900px;"></div>
+</br>
+</br>
+
+<script src='/static/jquery.js'></script>
+<script src='/static/highstock.js'></script>
+<script src='/static/exporting.js'></script>
+<script src='/static/highcharts.js'></script>
+<script>
+$(function () {
+    // 使用当前时区，否则东八区会差八个小时
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+    		
+    	 
+     $.getJSON('/mem_use', function (mem_use) {
+
+        // Create the chart
+        $('#container1').highcharts('StockChart', {
+	chart:{
+        events:{
+            load:function(){
+                var series = this.series[0]
+                setInterval(function(){
+                $.getJSON('/mem_use',function(res){
+                    $.each(res,function(i,v){
+                        series.addPoint(v)
+                    })
+                })
+                },3000)
+            }
+        }
+        },
+            rangeSelector : {
+                selected : 1
+            	},
+            title : {
+                text : 'NVM使用量变化图'
+            	},
+            series : [{
+                name : 'used memory',
+                data : mem_use,
+                tooltip: {
+                    valueDecimals: 2
+                }
+            	}]
+        });
+    });
+
+	$.getJSON('/free', function (free) {
+
+        // Create the chart
+        $('#container2').highcharts('StockChart', {
+        chart:{
+        events:{
+            load:function(){
+                var series = this.series[0]
+                setInterval(function(){
+                $.getJSON('/free',function(res){
+                    $.each(res,function(i,v){
+                        series.addPoint(v)
+                    })
+                })
+                },3000)
+            }
+        }
+        },
+            rangeSelector : {
+                selected : 1
+            	},
+            title : {
+                text : 'DRAM使用量变化图'
+            	},
+            series : [{
+                name : 'free memory',
+                data : free,
+                tooltip: {
+                    valueDecimals: 2
+                }
+            	}]
+        });
+    });
+
+	$.getJSON('/buffers', function (buffers) {
+
+        // Create the chart
+        $('#container3').highcharts('StockChart', {
+        chart:{
+        events:{
+            load:function(){
+                var series = this.series[0]
+                setInterval(function(){
+                $.getJSON('/buffers',function(res){
+                    $.each(res,function(i,v){
+                        series.addPoint(v)
+                    })
+                })
+                },3000)
+            }
+        }
+        },
+            rangeSelector : {
+                selected : 1
+            	},
+            title : {
+                text : 'buffers use'
+            	},
+            series : [{
+                name : 'buffers',
+                data : buffers,
+                tooltip: {
+                    valueDecimals: 2
+                }
+            	}]
+        });
+    });
+
+	$.getJSON('/cache', function (cache) {
+
+        // Create the chart
+        $('#container4').highcharts('StockChart', {
+        chart:{
+        events:{
+            load:function(){
+                var series = this.series[0]
+                setInterval(function(){
+                $.getJSON('/cache',function(res){
+                    $.each(res,function(i,v){
+                        series.addPoint(v)
+                    })
+                })
+                },3000)
+            }
+        }
+        },
+            rangeSelector : {
+                selected : 1
+            	},
+            title : {
+                text : '当前NVM使用量占比'
+            	},
+            series : [{
+                name : 'cache',
+                data : cache,
+                type : 'area',
+                tooltip: {
+                    valueDecimals: 2
+                }
+            	}]
+        });
+    });
+	
+	$('#container5').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '各种应用所占的NVM量比例'
+        },
+        tooltip: {
+            headerFormat: '{series.name}<br>',
+            pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'used memory of applications',
+            data: [
+                ['Firefox',   45.0],
+                ['IE',       26.8],
+                {
+                    name: 'Chrome',
+                    y: 12.8,
+                    sliced: true,
+                    selected: true
+                },
+                ['Safari',    8.5],
+                ['Opera',     6.2],
+                ['其他',   0.7]
+            ]
+        }]
+    });
+    
+    $('#container6').highcharts({
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+                beta: 0
+            }
+        },
+        title: {
+            text: '各种应用所占的DRAM量比例'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                depth: 35,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}'
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'cache percentage',
+            data: [
+                ['Firefox',   45.0],
+                ['IE',       26.8],
+                {
+                    name: 'Chrome',
+                    y: 12.8,
+                    sliced: true,
+                    selected: true
+                },
+                ['Safari',    8.5],
+                ['Opera',     6.2],
+                ['Others',   0.7]
+            ]
+        }]
+    });
+    
+    $('#container').highcharts({
+        chart: {
+            type: 'gauge',
+            plotBackgroundColor: null,
+            plotBackgroundImage: null,
+            plotBorderWidth: 0,
+            plotShadow: false
+        },
+        title: {
+            text: '速度仪'
+        },
+        pane: {
+            startAngle: -150,
+            endAngle: 150,
+            background: [{
+                backgroundColor: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0, '#FFF'],
+                        [1, '#333']
+                    ]
+                },
+                borderWidth: 0,
+                outerRadius: '109%'
+            }, {
+                backgroundColor: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0, '#333'],
+                        [1, '#FFF']
+                    ]
+                },
+                borderWidth: 1,
+                outerRadius: '107%'
+            }, {
+                // default background
+            }, {
+                backgroundColor: '#DDD',
+                borderWidth: 0,
+                outerRadius: '105%',
+                innerRadius: '103%'
+            }]
+        },
+        // the value axis
+        yAxis: {
+            min: 0,
+            max: 200,
+            minorTickInterval: 'auto',
+            minorTickWidth: 1,
+            minorTickLength: 10,
+            minorTickPosition: 'inside',
+            minorTickColor: '#666',
+            tickPixelInterval: 30,
+            tickWidth: 2,
+            tickPosition: 'inside',
+            tickLength: 10,
+            tickColor: '#666',
+            labels: {
+                step: 2,
+                rotation: 'auto'
+            },
+            title: {
+                text: 'km/h'
+            },
+            plotBands: [{
+                from: 0,
+                to: 120,
+                color: '#55BF3B' // green
+            }, {
+                from: 120,
+                to: 160,
+                color: '#DDDF0D' // yellow
+            }, {
+                from: 160,
+                to: 200,
+                color: '#DF5353' // red
+            }]
+        },
+        series: [{
+            name: 'Speed',
+            data: [80],
+            tooltip: {
+                valueSuffix: ' km/h'
+            }
+        }]
+    },
+                               // Add some life
+                               function (chart) {
+        if (!chart.renderer.forExport) {
+            setInterval(function () {
+                var point = chart.series[0].points[0],
+                    newVal,
+                    inc = Math.round((Math.random() - 0.5) * 20);
+                newVal = point.y + inc;
+                if (newVal < 0 || newVal > 200) {
+                    newVal = point.y - inc;
+                }
+                point.update(newVal);
+            }, 3000);
+        }
+    });
+				
+});
+</script>
+
+</body>
+</html>
