@@ -14,7 +14,7 @@ def getHmfs():
     	t = int(time.time())
     	sql = 'insert into hmfs_info (time,hmfs,hmfs_total) value (%s,%s,%s)'%(t,hmfs_use,hmfs_t)
     	cur.execute(sql)
-    	print t,hmfs_use,hmfs_use
+    	print t,hmfs_use,hmfs_t
     	 #print 'ok'
 while True:
     time.sleep(1)

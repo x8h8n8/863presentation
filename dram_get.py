@@ -15,7 +15,7 @@ def getMem():
         cache = int(f.readline().split()[1])
     	dram_use = (total-free-buffers-cache)/1024
     	t = int(time.time())
-    	sql = 'insert into dram_info (time,dram,dram_total) value (%s,%s)'%(t,dram_use,total)
+    	sql = 'insert into dram_info (time,dram,dram_total) value (%s,%s,%s)'%(t,dram_use,total)
     	cur.execute(sql)
     	print t,dram_use,total
     	#print 'ok'
