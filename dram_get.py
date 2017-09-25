@@ -3,14 +3,14 @@
 import time
 import MySQLdb as mysql
 
-db = mysql.connect(user="root",passwd="Make8868",db="memory",host="localhost")
+db = mysql.connect(user="root",passwd="123456",db="memory",host="localhost")
 db.autocommit(True)
 cur = db.cursor()
 
 def getMem():
 	with open('/proc/meminfo') as f:
 		total = int(f.readline().split()[1])
-		free = int(f.readline().split()[1])
+        free = int(f.readline().split()[1])
 		f.readline()
         	buffers = int(f.readline().split()[1])
         	cache = int(f.readline().split()[1])
