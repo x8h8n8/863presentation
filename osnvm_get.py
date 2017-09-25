@@ -8,7 +8,7 @@ db.autocommit(True)
 cur = db.cursor()
 
 def getOsnvm():
-    with open('/home/viking/HuangKaiXin/HMFS-Daisy/pcmapi/demo-test/memdata.txt') as f:
+    with open('/home/viking/HuangKaixin/HMFS-Daisy/pcmapi/demo-test/memdata.txt') as f:
         osnvm_use = int(f.readline().split()[1])
         t = int(time.time())
     	sql = 'insert into osnvm_info (time,osnvm) value (%s,%s)'%(t,osnvm_use)

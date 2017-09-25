@@ -9,8 +9,11 @@ cur = db.cursor()
 
 def getHmfs():
     with open('./hmfs_status.txt') as f:
-        hmfs_use = int(f.readline().split()[1])
-        hmfs_t = int(f.readline().split()[2])
+        l = f.readline().split()
+        hmfs_use = int(l[1])
+        print hmfs_use
+        hmfs_t = int(l[2])
+        print hmfs_t
     	t = int(time.time())
     	sql = 'insert into hmfs_info (time,hmfs,hmfs_total) value (%s,%s,%s)'%(t,hmfs_use,hmfs_t)
     	cur.execute(sql)

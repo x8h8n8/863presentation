@@ -1,7 +1,7 @@
 /*************************************************************************
 	> File Name: hmfs_show.c
 	> Author: Weiyu Cheng
-	> Mail: 
+	> Mail:
 	> Created Time: 2017年09月22日 星期五 15时34分14秒
  ************************************************************************/
 
@@ -24,7 +24,7 @@
 int main(int argc, char** argv)
 {
         char doc[]="hmfs_status.txt";
-    
+
     if(argc!=2){
         printf("usage: ./hmfs_show absolute_path_of_hmfs_dir\n");
         return -1;
@@ -34,7 +34,7 @@ int main(int argc, char** argv)
         perror("daemon");
         return 1;
     }
-    
+
     pid_t pid = getpid();
     printf("Running in background, the pid is %d\n", pid);
 
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         //int fd = open(doc, O_CREAT|O_WRONLY|O_TRUNC);
         int fd = creat(doc, S_IRWXU|S_IROTH);
         char content[128];
-        int len = sprintf(content, "NVM %lld %lld", (totalsize-freeDisk)>>20, totalsize>>20);
+        int len = sprintf(content, "NVM %lld %lld\n", (totalsize-freeDisk)>>20, totalsize>>20);
         write(fd, content, len);
         close(fd);
         sleep(1);
