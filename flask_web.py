@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request
 import MySQLdb as mysql
 
-con = mysql.connect(user='root',passwd='Make8868',host='localhost',db='memory')
+con = mysql.connect(user='root',passwd='123456',host='localhost',db='memory')
 
 con.autocommit(True)
 cur = con.cursor()
@@ -13,13 +13,13 @@ def index():
     return render_template('index.html')
 
 tmp_time1 = 0
-@app.route('/mem_use')
-def mem_use():
+@app.route('/dram_use')
+def dram_use():
     global tmp_time1
     if tmp_time1>0:
-        sql = 'select memuse,time from mem_info where time>%s' % (tmp_time1/1000)
+        sql = 'select dram,time from dram_info where time>%s' % (tmp_time1/1000)
     else:
-        sql = 'select memuse,time from mem_info'
+        sql = 'select dram,time from dram_info'
     cur.execute(sql)
     arr = []
     for i in cur.fetchall():
@@ -29,53 +29,20 @@ def mem_use():
     return json.dumps(arr)
 
 tmp_time2 = 0
-@app.route('/free')
-def free():
+@app.route('/nvm_use')
+def nvm_use():
     global tmp_time2
     if tmp_time2>0:
-        sql = 'select free,time from mem_info where time>%s' % (tmp_time2/1000)
+        sql = 'select hmfs,osnvm,time from nvm_info where time>%s' % (tmp_time2/1000)
     else:
-        sql = 'select free,time from mem_info'
+        sql = 'select hmfs,osnvm,time from nvm_info'
     cur.execute(sql)
     arr = []
     for i in cur.fetchall():
-        arr.append([i[1]*1000,i[0]])
+        arr.append([i[2]*1000,i[0]+i[1]])
     if len(arr)>0:
         tmp_time2 = arr[-1][0]
     return json.dumps(arr)
-
-tmp_time3 = 0
-@app.route('/buffers')
-def buffers():
-    global tmp_time3
-    if tmp_time3>0:
-        sql = 'select buffers,time from mem_info where time>%s' % (tmp_time3/1000)
-    else:
-        sql = 'select buffers,time from mem_info'
-    cur.execute(sql)
-    arr = []
-    for i in cur.fetchall():
-        arr.append([i[1]*1000,i[0]])
-    if len(arr)>0:
-        tmp_time3 = arr[-1][0]
-    return json.dumps(arr)
-
-tmp_time4 = 0
-@app.route('/cache')
-def cache():
-    global tmp_time4
-    if tmp_time4>0:
-        sql = 'select cache,time from mem_info where time>%s' % (tmp_time4/1000)
-    else:
-        sql = 'select cache,time from mem_info'
-    cur.execute(sql)
-    arr = []
-    for i in cur.fetchall():
-        arr.append([i[1]*1000,i[0]])
-    if len(arr)>0:
-        tmp_time4 = arr[-1][0]
-    return json.dumps(arr)
-
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=9092,debug=True)

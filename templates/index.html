@@ -7,9 +7,6 @@
 <div style='height:105px;line-height:105px;overflow:hidden;border:1px'>混合式内存系统实时监控</div>
 </br>
 </br>
-<div id="container4" style="height: 400px; min-width: 900px;"></div>
-</br>
-</br>
 <div id="container1" style="height: 400px; width: 900px;float:left"></div>
 <div id="container5" style="height: 400px; width: 900px;float:right"></div>
 </br>
@@ -20,9 +17,6 @@
 </br>
 </br>
 
-<div id="container3" style="height: 400px; min-width: 900px;"></div>
-</br>
-</br>
 
 <script src='/static/jquery.js'></script>
 <script src='/static/highstock.js'></script>
@@ -38,7 +32,7 @@ $(function () {
     });
     		
     	 
-     $.getJSON('/mem_use', function (mem_use) {
+     $.getJSON('/dram_use', function (dram_use) {
 
         // Create the chart
         $('#container1').highcharts('StockChart', {
@@ -47,41 +41,7 @@ $(function () {
             load:function(){
                 var series = this.series[0]
                 setInterval(function(){
-                $.getJSON('/mem_use',function(res){
-                    $.each(res,function(i,v){
-                        series.addPoint(v)
-                    })
-                })
-                },3000)
-            }
-        }
-        },
-            rangeSelector : {
-                selected : 1
-            	},
-            title : {
-                text : 'NVM使用量变化图'
-            	},
-            series : [{
-                name : 'used memory',
-                data : mem_use,
-                tooltip: {
-                    valueDecimals: 2
-                }
-            	}]
-        });
-    });
-
-	$.getJSON('/free', function (free) {
-
-        // Create the chart
-        $('#container2').highcharts('StockChart', {
-        chart:{
-        events:{
-            load:function(){
-                var series = this.series[0]
-                setInterval(function(){
-                $.getJSON('/free',function(res){
+                $.getJSON('/dram_use',function(res){
                     $.each(res,function(i,v){
                         series.addPoint(v)
                     })
@@ -97,8 +57,8 @@ $(function () {
                 text : 'DRAM使用量变化图'
             	},
             series : [{
-                name : 'free memory',
-                data : free,
+                name : 'used dram',
+                data : dram_use,
                 tooltip: {
                     valueDecimals: 2
                 }
@@ -106,16 +66,16 @@ $(function () {
         });
     });
 
-	$.getJSON('/buffers', function (buffers) {
+	$.getJSON('/nvm_use', function (nvm_use) {
 
         // Create the chart
-        $('#container3').highcharts('StockChart', {
+        $('#container2').highcharts('StockChart', {
         chart:{
         events:{
             load:function(){
                 var series = this.series[0]
                 setInterval(function(){
-                $.getJSON('/buffers',function(res){
+                $.getJSON('/nvm_use',function(res){
                     $.each(res,function(i,v){
                         series.addPoint(v)
                     })
@@ -128,11 +88,11 @@ $(function () {
                 selected : 1
             	},
             title : {
-                text : 'buffers use'
+                text : 'NVM使用量变化图'
             	},
             series : [{
-                name : 'buffers',
-                data : buffers,
+                name : 'used nvm',
+                data : nvm_use,
                 tooltip: {
                     valueDecimals: 2
                 }
@@ -140,42 +100,8 @@ $(function () {
         });
     });
 
-	$.getJSON('/cache', function (cache) {
-
-        // Create the chart
-        $('#container4').highcharts('StockChart', {
-        chart:{
-        events:{
-            load:function(){
-                var series = this.series[0]
-                setInterval(function(){
-                $.getJSON('/cache',function(res){
-                    $.each(res,function(i,v){
-                        series.addPoint(v)
-                    })
-                })
-                },3000)
-            }
-        }
-        },
-            rangeSelector : {
-                selected : 1
-            	},
-            title : {
-                text : '当前NVM使用量占比'
-            	},
-            series : [{
-                name : 'cache',
-                data : cache,
-                type : 'area',
-                tooltip: {
-                    valueDecimals: 2
-                }
-            	}]
-        });
-    });
 	
-	$('#container5').highcharts({
+	  $('#container5').highcharts({
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
