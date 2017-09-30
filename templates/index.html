@@ -102,46 +102,54 @@ $(function () {
 
 	
 	
+    $.getJSON('/dramnvm_now', function (dramnvm_now) {
+        $('#container3').highcharts({
+            chart: {
+                type: 'column'
+                events:{
+                    load:function(){
+                        var series = this.series[0],
+                        setInterval(function(){
+                        $.getJSON('/dramnvm_now',function(res){
+                            $.each(res,function(i,v){
+                                series.addPoint(v)
+                            })
+                        })
+                        },3000)
+            }
+        }
 
-    $('#container3').highcharts({
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'DRAM和NVM的实时变化情况'
-        },
-        xAxis: {
-            type: 'category'
-        },
-        yAxis: {
+            },
             title: {
-                text: '使用量'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        plotOptions: {
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.y:.1f}%'
+                text: 'DRAM和NVM的实时变化情况'
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: '使用量'
                 }
-            }
-        },
-        series: [{
-            name: 'NVM和DRAM使用量比较',
-            colorByPoint: true,
-            data: [{
-                name: 'DRAM使用量',
-                y: 20.3,
-            }, {
-                name: 'NVM使用量',
-                y: 24.03,
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.1f}%'
+                    }
+                }
+            },
+            series: [{
+                name: 'NVM和DRAM使用量比较',
+                colorByPoint: true,
+                data: dramnvm_use,
             }]
-        }]
-     });
+        });
+    });
 
 	
 

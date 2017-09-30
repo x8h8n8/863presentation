@@ -44,6 +44,17 @@ def nvm_use():
         tmp_time2 = arr[-1][0]
     return json.dumps(arr)
 
+@app.route('/dramnvm_now')
+def dramnvm_now():
+    sql1 = 'select dram from dram_info limit 1'
+    sql2 = 'select osnvm from nvm_info limit 1'
+    cur.execute(sql1)
+    dram_now = cur[0][0]
+    cur.execute(sql2)
+    nvm_now = cur[0][0]
+    arr = {'dram_now':dram_now, 'nvm_now':nvm_now}
+    return json.dumps(arr)
+
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=9092,debug=True)
 
