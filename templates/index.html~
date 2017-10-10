@@ -102,13 +102,12 @@ $(function () {
 
 	
 	
-
-    $('#container3').highcharts({
+	$('#container3').highcharts({
         chart: {
             type: 'column'
         },
         title: {
-            text: 'DRAM和NVM的实时变化情况'
+            text: '总的使用DRAM和NVM的量'
         },
         xAxis: {
             type: 'category'
@@ -135,13 +134,14 @@ $(function () {
             colorByPoint: true,
             data: [{
                 name: 'DRAM使用量',
-                y: 20.3,
+                y: 10.3,
             }, {
                 name: 'NVM使用量',
                 y: 24.03,
             }]
         }]
      });
+
 
 	
 
