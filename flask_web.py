@@ -52,7 +52,7 @@ def dramnvm_now():
     dram_now = cur[0][0]
     cur.execute(sql2)
     nvm_now = cur[0][0]
-    arr = {'dram_now':dram_now, 'nvm_now':nvm_now}
+    arr = [{ name: 'DRAM使用量',y: dram_now,}, {name: 'NVM使用量',y: nvm_now,}]
     return json.dumps(arr)
 
 if __name__=='__main__':

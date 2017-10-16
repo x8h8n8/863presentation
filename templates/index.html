@@ -67,81 +67,86 @@ $(function () {
     });
 
 	$.getJSON('/nvm_use', function (nvm_use) {
-
         // Create the chart
         $('#container2').highcharts('StockChart', {
-        chart:{
-        events:{
-            load:function(){
-                var series = this.series[0]
-                setInterval(function(){
-                $.getJSON('/nvm_use',function(res){
-                    $.each(res,function(i,v){
-                        series.addPoint(v)
-                    })
-                })
-                },3000)
-            }
-        }
-        },
+            chart:{
+                events:{
+                    load:function(){
+                        var series = this.series[0]
+                        setInterval(function(){
+                            $.getJSON('/nvm_use',function(res){
+                                $.each(res,function(i,v){
+                                    series.addPoint(v)
+                                })
+                            })
+                        },3000)
+                    }
+                }
+            },
             rangeSelector : {
                 selected : 1
-            	},
+            },
             title : {
                 text : 'NVM使用量变化图'
-            	},
+            },
             series : [{
                 name : 'used nvm',
                 data : nvm_use,
                 tooltip: {
                     valueDecimals: 2
                 }
-            	}]
+            }]
         });
     });
 
 	
-	
-$('#container3').highcharts({
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: '总的使用DRAM和NVM的量'
-        },
-        xAxis: {
-            type: 'category'
-        },
-        yAxis: {
-            title: {
-                text: '使用量'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        plotOptions: {
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.y:.1f}%'
+	$.getJSON('/dramnvm_now', function (dramnvm_now) {
+        $('#container3').highcharts({
+            chart: {
+                type: 'column'
+                events:{
+                    load:function(){
+                        var series = this.series[0]
+                        setInterval(function(){
+                            $.getJSON('/dramnvm_now',function(res){
+                                $.each(res,function(i,v){
+                                    series.addPoint(v)
+                                })
+                            })
+                        },3000)
+                    }
                 }
-            }
-        },
-        series: [{
-            name: 'NVM和DRAM使用量比较',
-            colorByPoint: true,
-            data: [{
-                name: 'DRAM使用量',
-                y: 10.3,
-            }, {
-                name: 'NVM使用量',
-                y: 24.03,
+            },
+            title: {
+                text: '总的使用DRAM和NVM的量'
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: '使用量'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.1f}%'
+                    }
+                }
+            },
+            series: [{
+                name: 'NVM和DRAM使用量比较',
+                colorByPoint: true,
+                data: dramnvm_now
             }]
-        }]
-     });
-
+        });
+    });
 
 	
 
