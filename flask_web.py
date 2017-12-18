@@ -1,10 +1,10 @@
 from flask import Flask,render_template,request
-import MySQLdb as mysql
-
-con = mysql.connect(user='root',passwd='123456',host='localhost',db='memory')
-
-con.autocommit(True)
-cur = con.cursor()
+# import MySQLdb as mysql
+#
+# con = mysql.connect(user='root',passwd='123456',host='localhost',db='memory')
+#
+# con.autocommit(True)
+# cur = con.cursor()
 app = Flask(__name__)
 import json
 
@@ -49,9 +49,9 @@ def dramnvm_now():
     sql1 = 'select dram from dram_info limit 1'
     sql2 = 'select osnvm from nvm_info limit 1'
     cur.execute(sql1)
-    dram_now = cur[0][0]
+    dram_now = cur.fetchall()[0][0]
     cur.execute(sql2)
-    nvm_now = cur[0][0]
+    nvm_now = cur.fetchall()[0][0]
     arr = [{ name: 'DRAM使用量',y: dram_now,}, {name: 'NVM使用量',y: nvm_now,}]
     return json.dumps(arr)
 

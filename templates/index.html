@@ -106,11 +106,13 @@ $(function () {
                 type: 'column'
                 events:{
                     load:function(){
-                        var series = this.series[0]
+                        var series1 = this.series[0]
+                        //var series2 = this.series[1]
                         setInterval(function(){
                             $.getJSON('/dramnvm_now',function(res){
                                 $.each(res,function(i,v){
-                                    series.addPoint(v)
+                                    series1.addPoint(v)
+                                    //series2.addPoint(v)
                                 })
                             })
                         },3000)
